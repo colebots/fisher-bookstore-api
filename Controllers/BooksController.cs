@@ -1,40 +1,37 @@
-using Fisher.Bookstore.Models;
-using Fisher.Bookstore.Services;
 using Microsoft.AspNetCore.Mvc;
+using Fisher.Bookstore.Services;
+using Fisher.Bookstore.Models;
 
 namespace Fisher.Bookstore.Controllers
 {
-
     [ApiController]
     [Route("api/[controller]")]
     public class BooksController : ControllerBase
     {
         private IBooksRepository booksRepository;
-
         public BooksController(IBooksRepository repository)
         {
             booksRepository = repository;
         }
 
+
         [HttpGet]
-        public IActionResult GetAll()
+        public IActionResult GetBooks()
         {
             return Ok(booksRepository.GetBooks());
         }
-
-        [HttpGet("{bookId}")]
+        
+       [HttpGet("{bookId}")]
         public IActionResult Get(int bookId)
         {
-            if (!booksRepository.BookExists(bookId))
-            {
+            if (!booksRepository.BookExists(bookId)){
                 return NotFound();
             }
-
             return Ok(booksRepository.GetBook(bookId));
         }
 
         [HttpPost]
-        public IActionResult Post([FromBody]Book book)
+        public IActionResult Post([FromBody] Book book)
         {
             var bookId = booksRepository.AddBook(book);
             return Created($"https://localhost:5001/api/books/{bookId}", book);
@@ -43,12 +40,12 @@ namespace Fisher.Bookstore.Controllers
         [HttpPut("{bookId}")]
         public IActionResult Put(int bookId, [FromBody] Book book)
         {
-            if (bookId != book.Id)
+            if(bookId != book.Id)
             {
                 return BadRequest();
             }
 
-            if (!booksRepository.BookExists(bookId))
+            if(!booksRepository.BookExists(bookId))
             {
                 return NotFound();
             }
@@ -68,5 +65,7 @@ namespace Fisher.Bookstore.Controllers
             booksRepository.DeleteBook(bookId);
             return Ok();
         }
+
+        
     }
 }
